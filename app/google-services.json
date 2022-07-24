@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "776626437800",
+    "project_id": "common-facfb",
+    "storage_bucket": "common-facfb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776626437800:android:b4840e8951b75b474bcc9d",
+        "android_client_info": {
+          "package_name": "com.handytools.commongooglesigninauth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776626437800-c6qa4u9d8esi7rsv8697ouijouql6afh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.handytools.commongooglesigninauth",
+            "certificate_hash": "baf0351d9498620bee22a63ea8ddfeecf24245cc"
+          }
+        },
+        {
+          "client_id": "776626437800-p1oklegccrrmb45cvjv4bdduutdusk7t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBvAMRtkUpqNJYmF8etfa82YVDudn4HUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776626437800-p1oklegccrrmb45cvjv4bdduutdusk7t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
