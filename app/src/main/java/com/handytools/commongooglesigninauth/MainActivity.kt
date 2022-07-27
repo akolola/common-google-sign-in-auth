@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
+
     companion object {
         private val TAG = "GoogleActivity"
         private val RC_SIGN_IN = 9001
@@ -26,7 +27,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var mAuth: FirebaseAuth? = null
     internal lateinit var mGoogleSignInClient: GoogleSignInClient
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -41,37 +44,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    override fun onClick(v: View) {
-        when(v.id){
-            sign_in_button.id -> signInToGoogle()
-            sign_out_button.id -> signOutFromGoogle()
-            disconnect_button.id -> revokeAccess()
-        }
-    }
-
-    fun signInToGoogle() {
-        val signInIntent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    private fun revokeAccess(){
-        mAuth!!.signOut()
-
-        mGoogleSignInClient.revokeAccess().addOnCompleteListener(this)
-        {
-            Log.w(TAG, "Revoked Access")
-        }
-    }
-
-    private fun signOutFromGoogle(){
-        mAuth!!.signOut()
-        mGoogleSignInClient.signOut().addOnCompleteListener(this)
-        {
-            Log.w(TAG, "Signed ouf of Google")
-        }
-    }
-
     public override fun onStart() {
+
         super.onStart()
 
         val currentUser = mAuth!!.currentUser
@@ -80,9 +54,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             Log.d(TAG,"Currently signed in: " + currentUser.email!!)
             Toast.makeText(this@MainActivity, "Google logged in: "+ currentUser.email!!, Toast.LENGTH_LONG).show()
         }
+
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == RC_SIGN_IN){
@@ -99,7 +75,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    override fun onClick(v: View) {
+
+        when(v.id){
+            sign_in_button.id -> signInToGoogle()
+            sign_out_button.id -> signOutFromGoogle()
+            disconnect_button.id -> revokeAccess()
+        }
+
+    }
+
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+
         Log.d(TAG,"firebaseAuthWithGoogle: " + acct.id!!)
 
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
@@ -117,8 +104,31 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    fun signInToGoogle() {
 
+        val signInIntent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
 
+    }
+
+    private fun signOutFromGoogle(){
+
+        mAuth!!.signOut()
+        mGoogleSignInClient.signOut().addOnCompleteListener(this)
+        {
+            Log.w(TAG, "Signed ouf of Google")
+        }
+
+    }
+
+    private fun revokeAccess(){
+        mAuth!!.signOut()
+
+        mGoogleSignInClient.revokeAccess().addOnCompleteListener(this)
+        {
+            Log.w(TAG, "Revoked Access")
+        }
+    }
 
 
 }
