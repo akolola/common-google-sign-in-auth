@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         sign_out_button.setOnClickListener(this)
         disconnect_button.setOnClickListener(this)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken("776626437800-p1oklegccrrmb45cvjv4bdduutdusk7t.apps.googleusercontent.com").requestEmail().build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         mAuth = FirebaseAuth.getInstance()
 

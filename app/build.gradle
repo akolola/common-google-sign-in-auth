@@ -34,7 +34,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    // ---                                                                  //Firebase SDK for Kotlin. Added automatically.
+    // ---                                                                          //Firebase SDK for Kotlin. Added automatically.
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -43,12 +43,25 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 
-    implementation 'com.google.firebase:firebase-core:21.1.0'               // Google Firebase dependency. Basics. Added manually.
-    implementation 'com.google.firebase:firebase-auth:21.0.6'               // Google Firebase dependency. Auth.   Added manually.
+    implementation 'com.google.firebase:firebase-core:21.1.0'                       // Google Firebase dependency. Basics. Added manually.
+    implementation 'com.google.firebase:firebase-auth:21.0.6'                       // Google Firebase dependency. Auth.   Added manually.
 
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'       // Google Google dependency. Auth.   Added manually.
+    implementation 'com.google.android.gms:play-services-auth:20.2.0'               // Google Google dependency. Auth.   Added manually.
 
+    //===================================================================
+
+    implementation('com.google.api-client:google-api-client-android:1.23.0'){       // Google API Client. Added manually.
+        exclude group: 'org.apache.httpcomponents'
+    }
+
+    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {  // Google Drive. Added manually.
+        exclude group: 'org.apache.httpcomponents'
+    }
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'         //Kotlin components. Added manually.
+    implementation 'androidx.activity:activity-ktx:1.5.1'                           //Kotlin components. Added manually.
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava' //Guava conflict fix. Added manually.
 }
 
-apply plugin: 'com.google.gms.google-services'                              // Google Play services plugin. Added manually.
-apply plugin: 'kotlin-android-extensions'                                   // Kotlin stuff with boilerplate sourcecode. Added manually.
+apply plugin: 'com.google.gms.google-services'                                      // Google Play services plugin. Added manually.
+apply plugin: 'kotlin-android-extensions'                                           // Kotlin stuff with boilerplate sourcecode. Added manually.
