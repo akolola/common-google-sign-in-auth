@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         sign_in_button.setSize(SignInButton.SIZE_WIDE)
         sign_out_button.setOnClickListener(this)
         disconnect_button.setOnClickListener(this)
+        navigate_to_backup_button.setOnClickListener(this)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken("776626437800-p1oklegccrrmb45cvjv4bdduutdusk7t.apps.googleusercontent.com").requestEmail().build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             sign_in_button.id -> signInToGoogle()
             sign_out_button.id -> signOutFromGoogle()
             disconnect_button.id -> revokeAccess()
+            navigate_to_backup_button.id -> navigateToBackup()
         }
 
     }
@@ -128,6 +130,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         {
             Log.w(TAG, "Revoked Access")
         }
+    }
+
+    private fun navigateToBackup() {
+        val intent = Intent(this, Backup::class.java)
+        startActivity(intent)
     }
 
 

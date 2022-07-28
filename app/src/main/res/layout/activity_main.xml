@@ -42,5 +42,16 @@
         app:layout_constraintTop_toBottomOf="@+id/sign_out_button"
         app:layout_constraintVertical_bias="0.362" />
 
+    <Button
+        android:id="@+id/navigate_to_backup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Backup"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/disconnect_button"
+        app:layout_constraintVertical_bias="0.524" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
