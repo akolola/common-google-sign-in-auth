@@ -37,11 +37,19 @@ class Backup : AppCompatActivity() {
         mDrive = getDriveService(this)
         var addAttachment = findViewById<Button>(R.id.upload_button)
         addAttachment.setOnClickListener {
+
+
             GlobalScope.async(Dispatchers.IO) {
+
+                //==1
                 val intent = Intent()
                     .setType("*/*")
                     .setAction(Intent.ACTION_GET_CONTENT)
                 startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
+
+                //==2
+                uploadFileToGDrive(application)
+
             }
 
         }
@@ -65,30 +73,29 @@ class Backup : AppCompatActivity() {
         var tempDrive: Drive
         return tempDrive
     }
-    
+
     fun uploadFileToGDrive(context: Context) {
         mDrive.let { googleDriveService ->
             lifecycleScope.launch {
                 try {
 
-//                    val fileName = "Ticket"
-                    val raunit = File("storage/emulated/0/Download", "download.png")
+                    val fileName =  "20220728_133303.jpg"
+                    val absolutePath = context!!.getFileStreamPath(fileName).absolutePath
+
+                    val jpegFile = File(absolutePath)
                     val gfile = com.google.api.services.drive.model.File()
-                    gfile.name = "Subscribe"
-                    val mimetype = "image/png"
-                    val fileContent = FileContent(mimetype, raunit)
+                    gfile.name = "examplepic"
+                    val mimetype = "image/jpeg"
+                    val fileContent = FileContent(mimetype, jpegFile)
                     var fileid = ""
 
 
                     withContext(Dispatchers.Main) {
-
                         withContext(Dispatchers.IO) {
                             launch {
                                 var mFile = googleDriveService.Files().create(gfile, fileContent).execute()
                             }
                         }
-
-
                     }
 
 
