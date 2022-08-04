@@ -28,35 +28,68 @@ import java.io.FileOutputStream
 class Backup : AppCompatActivity() {
 
 
+    companion object {
+        private val TAG = "BackupActivity"
+        private val RC_SELECT_FILE = 9111
+    }
+
     lateinit var mDrive: Drive
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_backup)
 
+
         mDrive = getDriveService(this)
         var addAttachment = findViewById<Button>(R.id.upload_button)
         addAttachment.setOnClickListener {
-
-
             GlobalScope.async(Dispatchers.IO) {
-
-                //==1
-                val intent = Intent()
-                    .setType("*/*")
-                    .setAction(Intent.ACTION_GET_CONTENT)
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
-
-                //==2
-                uploadFileToGDrive(application)
-
+                val intent = Intent().setType("*/*").setAction(Intent.ACTION_GET_CONTENT)
+                startActivityForResult(Intent.createChooser(intent, "Select a file"), RC_SELECT_FILE)
             }
-
         }
+
 
     }
 
-    fun getDriveService(context: Context): Drive {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SELECT_FILE && resultCode == RESULT_OK) {
+            val selectedFile = data!!.data //The uri with the location of the file
+
+            val  fileName = getFileName(applicationContext.contentResolver, selectedFile!!)
+            uploadFileToLocalAppDir(selectedFile!!, fileName)
+            uploadFileToGoogleDrive(application, fileName)
+
+            Toast.makeText(this, "Selected file uploaded to Google Drive: $selectedFile",Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun getFileName(contentResolver: ContentResolver, fileUri: Uri): String {
+
+        var name = ""
+        val returnCursor = contentResolver.query(fileUri, null, null, null, null)
+
+        if (returnCursor != null) {
+            val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            returnCursor.moveToFirst()
+            name = returnCursor.getString(nameIndex)
+            returnCursor.close()
+        }
+
+        return name
+    }
+
+    private fun uploadFileToLocalAppDir(fileUri: Uri, fileName: String) {
+        val parcelFileDescriptor = applicationContext.contentResolver.openFileDescriptor(fileUri, "r", null)
+        val inputStream = FileInputStream(parcelFileDescriptor!!.fileDescriptor)
+        val file = File(applicationContext.filesDir, fileName)
+        val outputStream = FileOutputStream(file)
+        IOUtils.copy(inputStream, outputStream)
+    }
+
+    private fun getDriveService(context: Context): Drive {
         GoogleSignIn.getLastSignedInAccount(context).let { googleAccount ->
             val credential = GoogleAccountCredential.usingOAuth2(
                 this, listOf(DriveScopes.DRIVE_FILE)
@@ -74,21 +107,18 @@ class Backup : AppCompatActivity() {
         return tempDrive
     }
 
-    fun uploadFileToGDrive(context: Context) {
+    fun uploadFileToGoogleDrive(context: Context, fileName: String) {
         mDrive.let { googleDriveService ->
             lifecycleScope.launch {
                 try {
 
-                    val fileName =  "20220728_133303.jpg"
                     val absolutePath = context!!.getFileStreamPath(fileName).absolutePath
-
                     val jpegFile = File(absolutePath)
                     val gfile = com.google.api.services.drive.model.File()
                     gfile.name = "examplepic"
                     val mimetype = "image/jpeg"
                     val fileContent = FileContent(mimetype, jpegFile)
-                    var fileid = ""
-
+                    ///var fileid = ""
 
                     withContext(Dispatchers.Main) {
                         withContext(Dispatchers.IO) {
@@ -98,50 +128,18 @@ class Backup : AppCompatActivity() {
                         }
                     }
 
-
                 } catch (userAuthEx: UserRecoverableAuthIOException) {
                     startActivity(
                         userAuthEx.intent
                     )
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.d("asdf", e.toString())
-                    Toast.makeText(context,"Some Error Occured in Uploading Files" + e.toString(),Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "Error by file(s) upload. ", e)
+                    Toast.makeText(context, "Error by file(s) upload. $e",Toast.LENGTH_LONG).show()
                 }
             }
         }
 
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 111 && resultCode == RESULT_OK) {
-            val selectedFile = data!!.data //The uri with the location of the file
-            makeCopy(selectedFile!!)
-            Toast.makeText(this,selectedFile.toString(),Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun makeCopy(fileUri: Uri) {
-        val parcelFileDescriptor = applicationContext.contentResolver.openFileDescriptor(fileUri, "r", null)
-        val inputStream = FileInputStream(parcelFileDescriptor!!.fileDescriptor)
-        val file = File(applicationContext.filesDir, getFileName(applicationContext.contentResolver, fileUri))
-        val outputStream = FileOutputStream(file)
-        IOUtils.copy(inputStream, outputStream)
-    }
-
-    private fun getFileName(contentResolver: ContentResolver, fileUri: Uri): String {
-
-        var name = ""
-        val returnCursor = contentResolver.query(fileUri, null, null, null, null)
-        if (returnCursor != null) {
-            val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            returnCursor.moveToFirst()
-            name = returnCursor.getString(nameIndex)
-            returnCursor.close()
-        }
-
-        return name
     }
 
 
